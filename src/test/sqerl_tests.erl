@@ -391,6 +391,6 @@ make_replace_sql_test_()->
 insert_test_() ->
 	Table = t1,
 	Field_Value_List = [{name, "Mingyue"}, {age, 30}, {sex, 1}],
-	?_assertEqual(100,
+	?_assertEqual(<<"replace into `t1` set `name`='Mingyue',`age`=30,`sex`=1">>,
 		db_sql:make_replace_sql(Table, Field_Value_List)).
 

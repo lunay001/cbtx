@@ -36,7 +36,7 @@ init([]) ->
 
     ChildSpecs = [
         %% MySQL pools
-        mysql_poolboy:child_spec(pool, PoolOptions, MySqlOptions)
+        mysql_poolboy:child_spec(?DB_MYSQL_POOL, PoolOptions, MySqlOptions)
     ],
     {ok, {{one_for_one, 10, 10}, ChildSpecs}}.
 

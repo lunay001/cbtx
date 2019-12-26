@@ -47,10 +47,11 @@ start(_StartType, _StartArgs) ->
 	  middlewares => [cowboy_router, cowboy_handler]
   }),
 
-	lager:start(),
+    lager:start(),
+%%  redis连接池服务
+	eredis_pool:start(),
 	lager:info("Larger is start ......"),
-
-	cbtx_sup:start_link().
+    cbtx_sup:start_link().
 
 
 start()->
