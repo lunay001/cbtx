@@ -10,8 +10,10 @@
 	jsx,
     mysql_poolboy,
     sqerl,
-    lager,
-    eredis_pool
+    eredis,
+    eredis_pool,
+    eredis_cluster,
+    lager
    ]},
   {env,[]},
   {modules, []},

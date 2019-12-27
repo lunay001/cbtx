@@ -69,3 +69,5 @@ update(Table, Props, Where) ->
 delete(Table, Where)->
 	Sql = db_sql:make_delete_sql(Table, Where),
 	query(Sql, 2).
+
+

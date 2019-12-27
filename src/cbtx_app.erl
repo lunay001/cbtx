@@ -50,6 +50,7 @@ start(_StartType, _StartArgs) ->
     lager:start(),
 %%  redis连接池服务
 	eredis_pool:start(),
+	eredis_cluster:start(),
 	lager:info("Larger is start ......"),
     cbtx_sup:start_link().
 

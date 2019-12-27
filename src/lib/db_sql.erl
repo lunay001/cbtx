@@ -44,8 +44,10 @@ make_delete_sql(Table, Where) ->
 make_delete_sql(Table) ->
 	make_delete_sql(Table, undefined).
 
-make_select_sql(Sql)->
-	sqerl:sql(Sql, true).
+make_select_sql(SqlV)->
+	sqerl:sql(SqlV, true).
+
+%%{select, Modifier, Fields, {from, Tables}, WhereExpr, Extras}
 
 make_replace_sql(Table_name, Field_Value_List) ->
 %%  db_sql:make_replace_sql(player,

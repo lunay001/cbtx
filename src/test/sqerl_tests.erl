@@ -258,99 +258,99 @@ safe_test_() ->
 		]
 	}.
 
-unsafe_test_() ->
-	{foreachx,
-		fun (_) -> ok end,
-		[
-			{<<"SELECT * FROM foo WHERE a = b">>,
-				?_unsafe_test({select,'*',{from,foo},"WHERE a = b"})
-			},
-
-			{<<"SELECT * FROM foo WHERE a = 'foo'">>,
-				?_unsafe_test({select,'*',{from,foo},"WHERE a = 'foo'"})
-			},
-
-			{<<"SELECT * FROM foo WHERE a = 'i'm an evil query'">>,
-				?_unsafe_test({select,'*',{from,foo},<<"WHERE a = 'i'm an evil query'">>})
-			},
-
-			{<<"SELECT * FROM foo WHERE a = b">>,
-				?_unsafe_test({select,'*',{from,foo},<<"WHERE a = b">>})
-			},
-
-			{<<"SELECT * FROM foo WHERE a = b">>,
-				?_unsafe_test({select,'*',{from,foo},{where,"a = b"}})
-			},
-
-			{<<"SELECT * FROM foo WHERE a = b">>,
-				?_unsafe_test({select,'*',{from,foo},{where,<<"a = b">>}})
-			},
-
-			{<<"SELECT * FROM foo WHERE a IN (SELECT * FROM bar WHERE a = b)">>,
-				?_unsafe_test({select,'*',
-					{from,foo},
-					{where,{a,in,
-						{select,'*',{from,bar},{where,"a = b"}}}}})
-			},
-
-			{<<"SELECT * FROM foo WHERE a IN (SELECT * FROM bar WHERE a = b)">>,
-				?_unsafe_test({select,'*',
-					{from,foo},
-					{where,
-						{a,in,{select,'*',{from,bar},{where,<<"a = b">>}}}}})
-			},
-
-			{<<"SELECT * FROM foo WHERE a IN (SELECT * FROM bar WHERE a = b)">>,
-				?_unsafe_test({select,'*',
-					{from,foo},
-					{where,
-						{a,in,{select,'*',{from,bar},<<"WHERE a = b">>}}}})
-			},
-
-			{<<"SELECT * FROM foo WHERE a = b LIMIT 5">>,
-				?_unsafe_test({select,'*',{from,foo},{where,<<"a = b">>},<<"LIMIT 5">>})
-			},
-
-			{<<"(SELECT * FROM foo WHERE a = b) UNION (SELECT * FROM bar)">>,
-				?_unsafe_test({{select,'*',{from,foo},{where,<<"a = b">>}},
-					union,
-					{select,'*',{from,bar}}})
-			},
-
-			{<<"(SELECT * FROM foo) UNION (SELECT * FROM bar WHERE a = b)">>,
-				?_unsafe_test({{select,'*',{from,foo}},
-					union,
-					{select,'*',{from,bar},{where,<<"a = b">>}}})
-			},
-
-			{<<"(SELECT * FROM foo) UNION (SELECT * FROM bar) WHERE a = b">>,
-				?_unsafe_test({{select,'*',{from,foo}},
-					union,
-					{select,'*',{from,bar}},
-					{where,"a = b"}})
-			},
-
-			{<<"SELECT (a OR (foo))">>,
-				?_unsafe_test({select,{a,'or',"foo"}})
-			},
-
-			{<<"SELECT ((bar) OR b)">>,
-				?_unsafe_test({select,{"bar",'or',b}})
-			},
-
-			{<<"SELECT ((foo) AND (bar))">>,
-				?_unsafe_test({select,{"foo",'and',<<"bar">>}})
-			},
-
-			{<<"SELECT NOT (foo = bar)">>,
-				?_unsafe_test({select,{'not',"foo = bar"}})
-			},
-
-			{<<"SELECT NOT (foo = bar)">>,
-				?_unsafe_test({select,{'!',"foo = bar"}})
-			}
-		]
-	}.
+%%unsafe_test_() ->
+%%	{foreachx,
+%%		fun (_) -> ok end,
+%%		[
+%%			{<<"SELECT * FROM foo WHERE a = b">>,
+%%				?_unsafe_test({select,'*',{from,foo},"WHERE a = b"})
+%%			},
+%%
+%%			{<<"SELECT * FROM foo WHERE a = 'foo'">>,
+%%				?_unsafe_test({select,'*',{from,foo},"WHERE a = 'foo'"})
+%%			},
+%%
+%%			{<<"SELECT * FROM foo WHERE a = 'i'm an evil query'">>,
+%%				?_unsafe_test({select,'*',{from,foo},<<"WHERE a = 'i'm an evil query'">>})
+%%			},
+%%
+%%			{<<"SELECT * FROM foo WHERE a = b">>,
+%%				?_unsafe_test({select,'*',{from,foo},<<"WHERE a = b">>})
+%%			},
+%%
+%%			{<<"SELECT * FROM foo WHERE a = b">>,
+%%				?_unsafe_test({select,'*',{from,foo},{where,"a = b"}})
+%%			},
+%%
+%%			{<<"SELECT * FROM foo WHERE a = b">>,
+%%				?_unsafe_test({select,'*',{from,foo},{where,<<"a = b">>}})
+%%			},
+%%
+%%			{<<"SELECT * FROM foo WHERE a IN (SELECT * FROM bar WHERE a = b)">>,
+%%				?_unsafe_test({select,'*',
+%%					{from,foo},
+%%					{where,{a,in,
+%%						{select,'*',{from,bar},{where,"a = b"}}}}})
+%%			},
+%%
+%%			{<<"SELECT * FROM foo WHERE a IN (SELECT * FROM bar WHERE a = b)">>,
+%%				?_unsafe_test({select,'*',
+%%					{from,foo},
+%%					{where,
+%%						{a,in,{select,'*',{from,bar},{where,<<"a = b">>}}}}})
+%%			},
+%%
+%%			{<<"SELECT * FROM foo WHERE a IN (SELECT * FROM bar WHERE a = b)">>,
+%%				?_unsafe_test({select,'*',
+%%					{from,foo},
+%%					{where,
+%%						{a,in,{select,'*',{from,bar},<<"WHERE a = b">>}}}})
+%%			},
+%%
+%%			{<<"SELECT * FROM foo WHERE a = b LIMIT 5">>,
+%%				?_unsafe_test({select,'*',{from,foo},{where,<<"a = b">>},<<"LIMIT 5">>})
+%%			},
+%%
+%%			{<<"(SELECT * FROM foo WHERE a = b) UNION (SELECT * FROM bar)">>,
+%%				?_unsafe_test({{select,'*',{from,foo},{where,<<"a = b">>}},
+%%					union,
+%%					{select,'*',{from,bar}}})
+%%			},
+%%
+%%			{<<"(SELECT * FROM foo) UNION (SELECT * FROM bar WHERE a = b)">>,
+%%				?_unsafe_test({{select,'*',{from,foo}},
+%%					union,
+%%					{select,'*',{from,bar},{where,<<"a = b">>}}})
+%%			},
+%%
+%%			{<<"(SELECT * FROM foo) UNION (SELECT * FROM bar) WHERE a = b">>,
+%%				?_unsafe_test({{select,'*',{from,foo}},
+%%					union,
+%%					{select,'*',{from,bar}},
+%%					{where,"a = b"}})
+%%			},
+%%
+%%			{<<"SELECT (a OR (foo))">>,
+%%				?_unsafe_test({select,{a,'or',"foo"}})
+%%			},
+%%
+%%			{<<"SELECT ((bar) OR b)">>,
+%%				?_unsafe_test({select,{"bar",'or',b}})
+%%			},
+%%
+%%			{<<"SELECT ((foo) AND (bar))">>,
+%%				?_unsafe_test({select,{"foo",'and',<<"bar">>}})
+%%			},
+%%
+%%			{<<"SELECT NOT (foo = bar)">>,
+%%				?_unsafe_test({select,{'not',"foo = bar"}})
+%%			},
+%%
+%%			{<<"SELECT NOT (foo = bar)">>,
+%%				?_unsafe_test({select,{'!',"foo = bar"}})
+%%			}
+%%		]
+%%	}.
 
 
 make_insert_sql_test_() ->
@@ -393,4 +393,18 @@ insert_test_() ->
 	Field_Value_List = [{name, "Mingyue"}, {age, 30}, {sex, 1}],
 	?_assertEqual(<<"replace into `t1` set `name`='Mingyue',`age`=30,`sex`=1">>,
 		db_sql:make_replace_sql(Table, Field_Value_List)).
+
+make_select_sql_test_()->
+	Tables = t1,
+	Modifier = distinct,
+	Fields = '*',
+	WhereExpr = {'and', [{age, '<', 30}, {sex, '=', 1}]},
+	Extras = [{'order_by',
+		[{age, desc}, {sex, asc}]},
+		{limit,5,10}
+%%		,
+%%		{group_by,[age, sex],having,{age,'>', 20}}
+	],
+	?_assertEqual(<<"SELECT DISTINCT * FROM t1 WHERE ((age < 30) AND (sex = 1)) ORDER BY age DESC, sex ASC LIMIT 5, 10">>,
+		db_sql:make_select_sql({select, Modifier, Fields, {from, Tables}, WhereExpr, Extras})).
 

@@ -10,15 +10,15 @@
 -author("lunay").
 
 %% API
--export([]).
+-export([query/1, fetch_row/1, fetch_rows/1]).
 
-%%query(Sql) ->
-%%	mysql_poolboy:query(pool, Sql).
-%%
-%%fetch_row(_id) ->
-%%	mysql_poolboy:query(pool, "SELECT * FROM `t1` WHERE id = ? LIMIT 1", [_id]).
-%%
-%%fetch_rows(N) ->
-%%	mysql_poolboy:query(pool, "SELECT * FROM `t1` WHERE 1 LIMIT ?", [N]).
+query(Sql) ->
+	mysql_poolboy:query(pool, Sql).
+
+fetch_row(_id) ->
+	mysql_poolboy:query(pool, "SELECT * FROM `t1` WHERE id = ? LIMIT 1", [_id]).
+
+fetch_rows(N) ->
+	mysql_poolboy:query(pool, "SELECT * FROM `t1` WHERE 1 LIMIT ?", [N]).
 
 

@@ -37,14 +37,14 @@ welcome(Req, State) ->
 	[{<<"title">>,Title},{<<"content">>,Content}] = Req_Body_decoded,
 	Title1 = binary_to_list(Title),
 	Content1 = binary_to_list(Content),
-	io:format("Title1 is ~p ~n ", [Title1]),
-	io:format("Content1 is ~p ~n", [Content1]),
+	lager:info("Title1 is ~p ~n ", [Title1]),
+	lager:info("Content1 is ~p ~n", [Content1]),
 
 	T1 = proplists:get_value(<<"title">>, Req_Body_decoded),
 	C1 = proplists:get_value(<<"content">>, Req_Body_decoded),
 
-	io:format("T1 is ~p ~n ", [T1]),
-	io:format("C1 is ~p ~n", [C1]),
+	lager:info("T1 is ~p ~n ", [T1]),
+	lager:info("C1 is ~p ~n", [C1]),
 
 	Res1 = cowboy_req:set_resp_body(ReqBody, Req2),
 	Res2 = cowboy_req:delete_resp_header(<<"content-type">>, Res1),
