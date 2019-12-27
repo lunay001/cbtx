@@ -14,7 +14,11 @@
 %%====================================================================
 
 start(_StartType, _StartArgs) ->
-  Dispatch = cowboy_router:compile([
+	application:start(lager),
+	application:start(eredis_pool),
+	application:start(eredis_cluster),
+
+	Dispatch = cowboy_router:compile([
     {'_', [
 		{"/", cowboy_static, {priv_file, cbtx, "index.html"}},
       	{"/post", post_demo, []},
@@ -47,10 +51,10 @@ start(_StartType, _StartArgs) ->
 	  middlewares => [cowboy_router, cowboy_handler]
   }),
 
-    lager:start(),
-%%  redis连接池服务
-	eredis_pool:start(),
-	eredis_cluster:start(),
+%%    lager:start(),
+%%%%  redis连接池服务
+%%	eredis_pool:start(),
+%%	eredis_cluster:start(),
 	lager:info("Larger is start ......"),
     cbtx_sup:start_link().
 
