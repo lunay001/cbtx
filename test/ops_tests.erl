@@ -40,7 +40,7 @@ make_insert_sql_test_() ->
 make_insert_sql2_test_() ->
     Fx = [foo,bar,baz],
     Vx = [[a,b,c],[d,e,f]],
-    ?_assertEqual(<<>>, db_sql:make_insert_sql(project, [Fx, Vx])).
+    ?_assertEqual(<<"">>, db_sql:make_insert_sql(project, Fx, Vx)).
 
 
 %%UPDATE project SET foo = 5, bar = 6, baz = 'hello'
@@ -48,5 +48,5 @@ make_update_sql_test_()->
     Table_name = project,
     Props = [{foo, 5}, {bar, 6}, {baz, "hello"}],
     Where = {where,{a,'=',5}},
-    ?_assertEqual(<<"INSERT INTO t1(name, age, sex) VALUES ('bb', 1, 2)">>,
+    ?_assertEqual(<<"UPDATE project SET foo = 5, bar = 6, baz = 'hello' WHERE (a = 5)">>,
         db_sql:make_update_sql(Table_name, Props, Where)).
