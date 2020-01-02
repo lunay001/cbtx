@@ -40,8 +40,7 @@ make_insert_sql_test_() ->
 make_insert_sql2_test_() ->
     Fx = [foo,bar,baz],
     Vx = [[a,b,c],[d,e,f]],
-    ?_assertEqual(<<"">>, db_sql:make_insert_sql(project, Fx, Vx)).
-
+    ?_assertEqual(<<"INSERT INTO project(foo, bar, baz) VALUES ('a', 'b', 'c'), ('d', 'e', 'f')">>, db_sql:make_insert_sql(project, {Fx, Vx})).
 
 %%UPDATE project SET foo = 5, bar = 6, baz = 'hello'
 make_update_sql_test_()->

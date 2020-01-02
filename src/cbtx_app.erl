@@ -42,7 +42,9 @@ start(_StartType, _StartArgs) ->
 		{"/echo/post", echo_post, []},
 		{"/rest/hello/world", rest_hello_world, []},
 		{"/rest/pastebin", rest_pastebin, []},
-		{"/rest/post/demo", rest_post_demo, []}
+			{"/rest/post/demo", rest_post_demo, []},
+			{"/get/data/list", query_get, []},
+			{"/get2/data/list", query_get2, []}
 		]}
   ]),
   {ok, _} = cowboy:start_clear(http, [{port, ?SERVER_PORT}], #{

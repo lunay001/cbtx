@@ -8,9 +8,11 @@
 %%%-------------------------------------------------------------------
 -module(db_mysql).
 -author("lunay").
+-include("common.hrl").
 
 %% API
 -export([
+	select/1,
 	insert/2,
 	insert/3,
 	replace/2,
@@ -23,12 +25,12 @@
 query(Sql, R)->
 	if
 		R =:= 1 ->
-			Result = mysql_poolboy:transaction(pool, fun (Conn) ->
+			Result = mysql_poolboy:transaction(?DB_MYSQL_POOL, fun (Conn) ->
 				ok = mysql:query(Conn, Sql),
 				New_id = mysql:insert_id(Conn),
 				New_id end);
 		true ->
-			Result = mysql_poolboy:transaction(pool, fun (Conn) ->
+			Result = mysql_poolboy:transaction(?DB_MYSQL_POOL, fun (Conn) ->
 				ok = mysql:query(Conn, Sql),
 				_Count = mysql:affected_rows(Conn),
 				_Count end)
@@ -45,6 +47,9 @@ query(Sql, R)->
 	end,
 	R_info.
 
+
+select(SqlV)->
+  db_sql:make_select_sql(SqlV).
 
 %% 插入数据表
 insert(Table_name, FieldList, ValueList) ->
