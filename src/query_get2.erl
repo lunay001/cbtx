@@ -14,15 +14,16 @@
 
 init(Req0, Opts) ->
   Method = cowboy_req:method(Req0),
-  #{echo := Echo} = cowboy_req:match_qs([{echo, [], undefined}], Req0),
-  Req = echo(Method, Echo, Req0),
+  #{id := Id} = cowboy_req:match_qs([{id, [], undefined}], Req0),
+  Req = echo(Method, Id, Req0),
   {ok, Req, Opts}.
 
 echo(<<"GET">>, undefined, Req) ->
   cowboy_req:reply(400, #{}, <<"Missing echo parameter.">>, Req);
 
-echo(<<"GET">>, Echo, Req) ->
-  {ok, Data} = hope_sql:fetch_one2(Echo),
+echo(<<"GET">>, Id, Req) ->
+%%  {ok, Data} = hope_sql:fetch_row2(Id),
+  {ok, Data} = db_test:fetch_data(Id),
 %%  io:format("~p~n", [Data]),
   RespBody = jsx:encode([{<<"status">>, <<"ok">>}, {<<"data">>, Data}]),
   io:format("~p~n", [RespBody]),

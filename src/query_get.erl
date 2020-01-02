@@ -14,11 +14,28 @@
 
 init(Req0, Opts) ->
   Method = cowboy_req:method(Req0),
-  Req = echo(Method, undefined, Req0),
+  #{size := Size} = cowboy_req:match_qs([{size, [], undefined}], Req0),
+  S = case Size =:= undefined of
+        true ->
+          100;
+        false ->
+          try binary_to_integer(Size) of
+            R -> R
+          catch
+            Class:Reason:Stacktrace ->
+              lager:error(
+                "~nStacktrace:~s",
+                [lager:pr_stacktrace(Stacktrace, {Class, Reason})]),
+                10
+          end
+      end,
+
+  Req = echo(Method, S, Req0),
   {ok, Req, Opts}.
 
-echo(<<"GET">>, _, Req) ->
-  {ok, DataList} = hope_sql:fetch_rows(),
+echo(<<"GET">>, Size, Req) ->
+  io:format("Size: >>  ~p~n", [Size]),
+  {ok, DataList} = db_test:fetch_datas(Size),
   io:format("~p~n", [DataList]),
   RespBody = jsx:encode([{<<"msg">>, <<"ok">>}, {<<"data">>, DataList}]),
   io:format("~p~n", [RespBody]),
@@ -26,6 +43,9 @@ echo(<<"GET">>, _, Req) ->
     <<"content-type">> => <<"application/json; charset=utf-8">>
   }, RespBody, Req);
 
+
 echo(_, _, Req) ->
   %% Method not allowed.
   cowboy_req:reply(405, Req).
+
+

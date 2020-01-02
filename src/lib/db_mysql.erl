@@ -18,7 +18,9 @@
 	replace/2,
 	update/3,
 	delete/2,
-	query/2
+	query/2,
+	fetch_rows/1,
+	fetch_row/1
 ]).
 
 %%sql语句执行
@@ -50,6 +52,24 @@ query(Sql, R)->
 
 select(SqlV)->
   db_sql:make_select_sql(SqlV).
+
+fetch_rows(SqlV) ->
+	Sql = select(SqlV),
+	{ok, FieldList, TempList} = mysql_poolboy:query(?DB_MYSQL_POOL, Sql),
+	DataList = [lists:zip(FieldList, Data) || Data <- TempList],
+	{ok,  DataList}.
+
+fetch_row(SqlV) ->
+	Sql = select(SqlV),
+	{ok, FieldList, DataList} = mysql_poolboy:query(?DB_MYSQL_POOL, Sql),
+	if
+		length(DataList) > 0 ->
+			[H|_] = DataList,
+			Data = lists:zip(FieldList, H);
+		true ->
+			Data = #{}
+	end,
+	{ok,  Data}.
 
 %% 插入数据表
 insert(Table_name, FieldList, ValueList) ->
