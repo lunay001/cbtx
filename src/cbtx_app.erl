@@ -41,7 +41,7 @@ start(_StartType, _StartArgs) ->
 		{"/echo/get2", echo_get2, []},
 		{"/echo/post", echo_post, []},
 		{"/rest/hello/world", rest_hello_world, []},
-		{"/rest/pastebin", rest_pastebin, []},
+		{"/rest/pastebin/[:paste_id]", rest_pastebin, []},
 			{"/rest/post/demo", rest_post_demo, []},
 			{"/get/data/list", query_get, []},
 			{"/get2/data/list", query_get2, []}

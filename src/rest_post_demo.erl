@@ -13,12 +13,17 @@ init(Req, Opts) ->
 	{cowboy_rest, Req, Opts}.
 
 allowed_methods(Req, State) ->
-	{[<<"POST">>], Req, State}.
+	{[<<"POST">>, <<"GET">>], Req, State}.
 
 content_types_accepted(Req, State) ->
+%%	接受给定的资源类新
+%%	PUT，POST和PATCH方法 content_types_accepted
 	{[{<<"application/json">>, welcome}], Req, State}.
 
 content_types_provided(Req, State) ->
+%%	送出给定的类型资源
+%%	content_types_provided还返回它接受所有的内容类型回调的名称。
+%% 当满足所有条件时，仅在“ GET和HEAD方法”图的末尾调用此回调。
 	{[{<<"application/json">>, hello_to_json}], Req, State}.
 
 

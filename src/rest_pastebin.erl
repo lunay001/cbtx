@@ -1,4 +1,6 @@
 %% Feel free to use, reuse and abuse the code in this file.
+%% curl -v POST http://localhost:8888/rest/pastebin/22 -i -H "Content-Type:application/json" --data-urlencode paste@aaaaaa
+
 
 %% @doc Pastebin handler.
 -module(rest_pastebin).
@@ -30,12 +32,15 @@ content_types_provided(Req, State) ->
 content_types_accepted(Req, State) ->
 	{[{{<<"application">>, <<"x-www-form-urlencoded">>, '*'}, create_paste}],
 		Req, State}.
+%%	{[{<<"application/x-www-form-urlencoded">>, create_paste}], Req, State}.
+
 
 resource_exists(Req, _State) ->
 	case cowboy_req:binding(paste_id, Req) of
 		undefined ->
 			{true, Req, index};
 		PasteID ->
+			io:format("~p~n999999999999~n", [PasteID]),
 			case valid_path(PasteID) and file_exists(PasteID) of
 				true -> {true, Req, PasteID};
 				false -> {false, Req, PasteID}
@@ -43,14 +48,19 @@ resource_exists(Req, _State) ->
 	end.
 
 create_paste(Req, State) ->
+%%	curl -v --data-urlencode paste@priv/index.html  http://localhost:8888/rest/pastebin/
+	io:format("xxxxxxxxxxxxxxxxxxx~n"),
 	PasteID = new_paste_id(),
-	{ok, [{<<"paste">>, Paste}], Req2} = cowboy_req:read_urlencoded_body(Req),
+	io:format("~p~n", [PasteID]),
+%%	{ok, [{<<"paste">>, Paste}], Req2} = cowboy_req:read_urlencoded_body(Req),
+	Paste = <<"aaaaaaaaaaaaa">>,
 	ok = file:write_file(full_path(PasteID), Paste),
-	case cowboy_req:method(Req2) of
+	case cowboy_req:method(Req) of
 		<<"POST">> ->
-			{{true, <<$/, PasteID/binary>>}, Req2, State};
+			io:format("xxyyyyyzzzz"),
+			{{true, <<$/, PasteID/binary>>}, Req, State};
 		_ ->
-			{true, Req2, State}
+			{true, Req, State}
 	end.
 
 paste_html(Req, index) ->
@@ -80,7 +90,7 @@ read_file(Name) ->
 	Binary.
 
 full_path(Name) ->
-	filename:join([code:priv_dir(rest_pastebin), Name]).
+	filename:join([code:priv_dir(cbtx), Name]).
 
 file_exists(Name) ->
 	case file:read_file_info(full_path(Name)) of
