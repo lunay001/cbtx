@@ -34,9 +34,15 @@ init([]) ->
     MySqlOptions = [{user, ?DB_MYSQL_USER}, {password, ?DB_MYSQL_PASSWD}, {database, ?DB_MYSQL_DATABASE},
         {prepare, [{t1, "SELECT * FROM t1 WHERE id=?"}]}],
 
+    ListenerSpec = ranch:child_spec({?MODULE, echo},
+        ranch_tcp, #{socket_opts => [{port, 7777}]},
+        echo_protocol, []
+    ),
+
     ChildSpecs = [
         %% MySQL pools
-        mysql_poolboy:child_spec(?DB_MYSQL_POOL, PoolOptions, MySqlOptions)
+        mysql_poolboy:child_spec(?DB_MYSQL_POOL, PoolOptions, MySqlOptions),
+        ListenerSpec
     ],
     {ok, {{one_for_one, 10, 10}, ChildSpecs}}.
 

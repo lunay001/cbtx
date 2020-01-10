@@ -13,7 +13,8 @@
     eredis,
     eredis_pool,
     eredis_cluster,
-    lager
+    lager,
+    ranch
    ]},
   {env,[]},
   {modules, []},

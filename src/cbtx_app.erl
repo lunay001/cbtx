@@ -8,6 +8,7 @@
 
 %% Application callbacks
 -export([start/2, stop/1, start/0]).
+-export([prep_stop/1]).
 
 %%====================================================================
 %% API
@@ -18,6 +19,7 @@ start(_StartType, _StartArgs) ->
 	application:start(eredis_pool),
 	application:start(eredis_cluster),
 
+%%	HTTP AND Websocket
 	Dispatch = cowboy_router:compile([
     {'_', [
 		{"/", cowboy_static, {priv_file, cbtx, "index.html"}},
@@ -42,24 +44,37 @@ start(_StartType, _StartArgs) ->
 		{"/echo/post", echo_post, []},
 		{"/rest/hello/world", rest_hello_world, []},
 		{"/rest/pastebin/[:paste_id]", rest_pastebin, []},
-			{"/rest/post/demo", rest_post_demo, []},
-			{"/get/data/list", query_get, []},
-			{"/get2/data/list", query_get2, []}
+		{"/rest/post/demo", rest_post_demo, []},
+		{"/get/data/list", query_get, []},
+		{"/get2/data/list", query_get2, []}
 		]}
-  ]),
-  {ok, _} = cowboy:start_clear(http, [{port, ?SERVER_PORT}], #{
-	  env => #{dispatch => Dispatch},
-	  stream_handlers => [cowboy_compress_h, cowboy_stream_h],
-	  middlewares => [cowboy_router, cowboy_handler]
-  }),
+  	]),
 
-%%    lager:start(),
-%%%%  redis连接池服务
-%%	eredis_pool:start(),
-%%	eredis_cluster:start(),
+  	{ok, _} = cowboy:start_clear(http, [{port, ?SERVER_PORT}], #{
+		env => #{dispatch => Dispatch},
+		stream_handlers => [cowboy_compress_h, cowboy_stream_h],
+		middlewares => [cowboy_router, cowboy_handler]
+  	}),
+
 	lager:info("Larger is start ......"),
+
+	%% TCP
+	{ok, _} = ranch:start_listener(my_listener,
+		ranch_tcp, [{port, 5555}, {max_connections, 100}],
+		echo_protocol, []
+	),
+
+	{ok, _} = ranch:start_listener(tcp_reverse,
+		ranch_tcp, [{port, 6666}], reverse_protocol, []),
+
     cbtx_sup:start_link().
 
+
+prep_stop(State) ->
+	ok = ranch:suspend_listener(my_listener),
+	ok = ranch:wait_for_connections(my_listener, '==', 0),
+	ok = ranch:stop_listener(my_listener),
+	State.
 
 start()->
   io:format("~w~n", [good]),
