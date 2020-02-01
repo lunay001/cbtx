@@ -22,11 +22,11 @@ fetch_row(Id) ->
 	if
 		length(DataList) > 0 ->
 			[H|_] = DataList,
-			Data = lists:zip(FieldList, H);
+			DataMap = maps:from_list(lists:zip(FieldList, H));
 		true ->
-			Data = #{}
+			DataMap = #{}
 	end,
-	{ok,  Data}.
+	{ok,  DataMap}.
 
 fetch_rows() ->
 	{ok, FieldList, UserList} = mysql_poolboy:query(?DB_MYSQL_POOL, "SELECT * FROM t1 where 1 LIMIT 100", []),
@@ -38,7 +38,7 @@ fetch_row2(Id) ->
 	case length(DataList) > 0 of
 		true ->
 			[H|_] = DataList,
-			Data = lists:zip(FieldList, H);
+			Data = maps:from_list(lists:zip(FieldList, H));
 		false ->
 			Data = #{}
 	end,

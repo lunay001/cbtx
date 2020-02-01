@@ -56,7 +56,7 @@ select(SqlV)->
 fetch_rows(SqlV) ->
 	Sql = select(SqlV),
 	{ok, FieldList, TempList} = mysql_poolboy:query(?DB_MYSQL_POOL, Sql),
-	DataList = [lists:zip(FieldList, Data) || Data <- TempList],
+	DataList = [maps:from_list(lists:zip(FieldList, Data)) || Data <- TempList],
 	{ok,  DataList}.
 
 fetch_row(SqlV) ->
@@ -65,11 +65,12 @@ fetch_row(SqlV) ->
 	if
 		length(DataList) > 0 ->
 			[H|_] = DataList,
-			Data = lists:zip(FieldList, H);
+			DataList2 = lists:zip(FieldList, H);
 		true ->
-			Data = #{}
+			DataList2 = []
 	end,
-	{ok,  Data}.
+	DataMap = maps:from_list(DataList2),
+	{ok, DataMap}.
 
 %% 插入数据表
 insert(Table_name, FieldList, ValueList) ->

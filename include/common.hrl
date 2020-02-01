@@ -19,8 +19,6 @@
 -define(DB_MYSQL_POOL, pool).
 -define(DB_MYSQL_POOL_SIZE, 100).
 -define(DB_MYSQL_POOL_MAX, 1000).
-
-
-
+-define(RtoM(Name, Record), lists:foldl(fun({I, E}, Acc) -> Acc#{E => element(I, Record) } end, #{}, lists:zip(lists:seq(2, (record_info(size, Name))), (record_info(fields, Name))))).
 
 

@@ -34,15 +34,19 @@ init([]) ->
     MySqlOptions = [{user, ?DB_MYSQL_USER}, {password, ?DB_MYSQL_PASSWD}, {database, ?DB_MYSQL_DATABASE},
         {prepare, [{t1, "SELECT * FROM t1 WHERE id=?"}]}],
 
-    ListenerSpec = ranch:child_spec({?MODULE, echo},
-        ranch_tcp, #{socket_opts => [{port, 7777}]},
-        echo_protocol, []
-    ),
-
+    %%用户角色监控树
+    Game_Role_Sup_Specs = {game_role_sup, {game_role_sup, start_link, []},
+        permanent, 2000, supervisor, [game_role_sup]
+        },
+    %%ets监控树
+    Game_Ets_Sup_Specs = {game_ets_sup, {game_ets_sup, start_link, []},
+        permanent, 2000, supervisor, [game_ets_sup]
+    },
     ChildSpecs = [
-        %% MySQL pools
-        mysql_poolboy:child_spec(?DB_MYSQL_POOL, PoolOptions, MySqlOptions),
-        ListenerSpec
+        %% MySQL连接池监控树
+        mysql_poolboy:child_spec(?DB_MYSQL_POOL, PoolOptions, MySqlOptions)
+        ,Game_Role_Sup_Specs
+        ,Game_Ets_Sup_Specs
     ],
     {ok, {{one_for_one, 10, 10}, ChildSpecs}}.
 

@@ -7,14 +7,15 @@
    [kernel,
     stdlib,
     cowboy,
-	jsx,
+	  jsx,
     mysql_poolboy,
     sqerl,
     eredis,
     eredis_pool,
     eredis_cluster,
     lager,
-    ranch
+    ranch,
+    gun
    ]},
   {env,[]},
   {modules, []},

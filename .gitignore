@@ -26,3 +26,5 @@ _build
 _build/*
 .idea
 .idea/*
+mnesia_db_data
+mnesia_db_data/*

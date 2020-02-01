@@ -12,7 +12,8 @@ init(Req, Opts) ->
 websocket_init(State) ->
 	erlang:start_timer(1000, self(), <<"Hello!">>),
 	Pid = self(),
-	lager:info("~nPid:~p is login~~~", [Pid]),
+	lager:info("My Pid is ~p xxxxx", [Pid]),
+
 	{reply, {text, << "##########################">>}, State, hibernate}.
 %%	{ok, State}.
 
@@ -33,12 +34,12 @@ websocket_info({timeout, _Ref, Msg}, State) ->
 	{reply, {text, Msg}, State, hibernate};
 
 websocket_info({close, _}, State) ->
-	io:format("aaaaaaaaaaaaaaaa~n"),
-	self() ! {text, <<"Ready to logout2222">>},
+	self() ! {text, <<"Ready to logout">>},
 	{reply, {close, <<"some-reason">>}, State}.
 
 terminate(_Reason, _Req, State)->
 	Pid = self(),
-	self() ! {text, <<"Ready to logout1111">>},
-	lager:info("~nPid:~p is logout~~~", [Pid]),
+	self() ! {text, <<"Ready to logout">>},
+	lager:info("pid: ~p is logout", [Pid]),
+	lager:info("My Pid is ~p logout", [Pid]),
 	{ok, State, hibernate}.

@@ -9,7 +9,7 @@
         $(document).ready(init);
 
         function init() {
-            $('#server').val("ws://" + window.location.host + "/ws");
+            $('#server').val("ws://" + window.location.host + ":8080/ws");
             if(!("WebSocket" in window)){
                 $('#status').append('<p><span style="color: red;">websockets are not supported </span></p>');
                 $("#navigation").hide();

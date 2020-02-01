@@ -1,0 +1,23 @@
+//用户数据信息相关协议
+syntax = "proto3";
+import "user_info.proto";
+
+message pt_10000_c2s {
+    uint32 user_id = 1;
+}
+
+message pt_10000_s2c {
+    int32 ret = 1;
+    RoleInfo data = 2;
+}
+
+message pt_10001_c2s {
+
+}
+
+message pt_10001_s2c {
+    int32 ret = 1;
+    RoleInfo data = 2;
+}
+
+
