@@ -15,10 +15,11 @@
     eredis_cluster,
     lager,
     ranch,
-    gun
+    gun,
+    mnesia
    ]},
   {env,[]},
-  {modules, []},
+  {modules, [cbtx_app, server_box]},
 
   {maintainers, []},
   {licenses, ["Apache 2.0"]},
